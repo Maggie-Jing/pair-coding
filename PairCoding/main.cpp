@@ -6,7 +6,6 @@
 #include <gtest/gtest.h>
 //#define _UNIT_TEST
 
-//单元测试：
 TEST(CollectAroundNumber, shouldBe1WhenSroundingLessthan3Atom)
 {
 	int live[5][5] = {
@@ -27,8 +26,6 @@ TEST(CollectAroundNumber, shouldBe1WhenSroundingLessthan3Atom)
 	EXPECT_EQ(1, lo.collectAliveNaber(0, 4));
 }
 
-
-//Screen dimension constants
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
 
@@ -37,44 +34,28 @@ const int a_h = 10;
 
 const int rows = 80;
 const int cols = 80;
-const int colors[][4] = { { 255, 51, 204,225 },{ 255, 153,0,225 },{ 204, 153, 204,255 },{ 102, 255, 204,255 },{ 255, 99, 71,255 },{ 238, 238, 0,255 }
-,{ 209, 238, 238,255 },{ 139, 99, 108,255 } };
+const int colors[][4] = {
+	{ 255, 51, 204,225 },
+	{ 255, 153,0,225 },
+	{ 204, 153, 204,255 },
+	{ 102, 255, 204,255 },
+	{ 255, 99, 71,255 },
+	{ 238, 238, 0,255 },
+	{ 209, 238, 238,255 },
+	{ 139, 99, 108,255 } };
 
-
-
-//Starts up SDL and creates window
 bool init();
-
-//Loads media
-bool loadMedia();
-
-//Frees media and shuts down SDL
 void close();
-
 LiveOperate MyGame;
-
-//Loads individual image  
 SDL_Surface* loadSurface(std::string path);
-
-//The window we'll be rendering to
 SDL_Window* gWindow = NULL;
-
-//The surface contained by the window
-SDL_Surface* gScreenSurface = NULL; 
-
-//The window renderer    全局渲染器
+SDL_Surface* gScreenSurface = NULL;
 SDL_Renderer* gRenderer = NULL;
-
-
-//Current displayed image
-SDL_Surface* gCurrentSurface = NULL; 
-
+SDL_Surface* gCurrentSurface = NULL;
 void DrawRect();
-
 
 bool init()
 {
-
 	bool success = true;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -108,11 +89,6 @@ bool init()
 	return success;
 }
 
-bool loadMedia()
-{
-	bool success = true;
-	return success;
-}
 
 void close()
 {
@@ -148,61 +124,45 @@ int main(int argc, char* args[])
 	}
 	else
 	{
-		//Load media
-		if (!loadMedia())
+		bool quit = false;
+		bool flag_sigle_frame = true;
+		bool shouldUpdateLive = true;
+		SDL_Event e;
+		while (!quit)
 		{
-			printf("Failed to load media!\n");
-		}
-		else
-		{
-			bool quit = false;
-			bool flag_sigle_frame = true;
-			bool shouldUpdateLive = true;
-			SDL_Event e;
-			while (!quit)
+			while (SDL_PollEvent(&e) != 0)
 			{
-				while (SDL_PollEvent(&e) != 0)
+				if (e.type == SDL_QUIT)
 				{
-					if (e.type == SDL_QUIT)
-					{
-						quit = true;
-					}
-					if (e.key.keysym.sym == SDLK_RETURN&&e.type == SDL_KEYDOWN)
-					{
-							flag_sigle_frame = !flag_sigle_frame;
-							shouldUpdateLive = true;
-					}
+					quit = true;
 				}
-				
-				
-				if (shouldUpdateLive) {
-					SDL_RenderClear(gRenderer);
-					DrawRect();
-					SDL_RenderPresent(gRenderer);
-					MyGame.updateLive();
-					if (flag_sigle_frame)
-						shouldUpdateLive = false;
+				if (e.key.keysym.sym == SDLK_RETURN&&e.type == SDL_KEYDOWN)
+				{
+					flag_sigle_frame = !flag_sigle_frame;
+					shouldUpdateLive = true;
 				}
-				cout << shouldUpdateLive << " " << flag_sigle_frame << endl;
-				SDL_Delay(500);
-
-
-
-				//SDL_UpdateWindowSurface(gWindow);
 			}
+
+
+			if (shouldUpdateLive) {
+				SDL_RenderClear(gRenderer);
+				DrawRect();
+				SDL_RenderPresent(gRenderer);
+				MyGame.updateLive();
+				if (flag_sigle_frame)
+					shouldUpdateLive = false;
+			}
+			SDL_Delay(500);
 		}
 	}
 	close();
-
-
 	return 0;
 #endif
 }
 
 
-void DrawRect() {
-
-	cout << MyGame.getCols() << " " << MyGame.getRows() << endl;
+void DrawRect() 
+{
 	for (int i = 0; i < MyGame.getRows(); i++)
 	{
 		for (int j = 0; j < MyGame.getCols(); j++)

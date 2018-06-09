@@ -46,7 +46,6 @@ void LiveOperate::updateLive()
 		}
 		new_wold[row] = temp;
 	}
-	//更新旧世界：
 	clear();
 	_world = new_wold;
 }
