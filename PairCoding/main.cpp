@@ -4,10 +4,10 @@
 #include "LiveOperate.h"
 
 #include <gtest/gtest.h>
-#define _UNIT_TEST
+//#define _UNIT_TEST
 
 //µ¥Ôª²âÊÔ£º
-TEST(Check, Pos00)
+TEST(CheckLiveTest, PosAt00)
 {
 	bool live[5][5] = {
 		{ 0, 0, 1, 0, 0 },
@@ -34,7 +34,7 @@ TEST(Check, Pos00)
 	EXPECT_EQ(true, lo.checkLive(Point(0, 0)));
 }
 
-TEST(Check, Pos11)
+TEST(CheckLiveTest, shouldBe1WhenSroundingLess3Atom)
 {
 	bool live[5][5] = {
 		{ 0, 0, 1, 0, 0 },
@@ -58,13 +58,15 @@ TEST(Check, Pos11)
 	LiveOperate lo;
 	lo.init(world, 5, 5);
 
-	EXPECT_EQ(false, lo.checkLive(Point(1, 1)));
+	EXPECT_EQ(true, lo.checkLive(Point(1, 1)));
 }
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
+const int rows = 100;
+const int cols = 100;
 
 //Starts up SDL and creates window
 bool init();
@@ -124,7 +126,7 @@ bool init()
 			}
 			else
 			{
-				MyGame.randomInit(15, 15);
+				MyGame.randomInit(rows, cols);
 				SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 225);
 			}
 		}
@@ -161,6 +163,11 @@ SDL_Surface* loadSurface(std::string path)
 
 int main(int argc, char* args[])
 {
+#ifdef _UNIT_TEST
+	testing::InitGoogleTest(&argc, args);
+	return RUN_ALL_TESTS();
+#else
+
 	if (!init())
 	{
 		printf("Failed to initialize!\n");
@@ -188,7 +195,7 @@ int main(int argc, char* args[])
 				SDL_RenderClear(gRenderer);
 				DrawRect();
 				SDL_RenderPresent(gRenderer);
-				SDL_Delay(500);
+				SDL_Delay(30);
 				MyGame.updateLive();
 
 
@@ -198,11 +205,8 @@ int main(int argc, char* args[])
 		}
 	}
 	close();
-#ifdef _UNIT_TEST
-	testing::InitGoogleTest(&argc, args);
-	return RUN_ALL_TESTS();
-#endif
-#ifndef _UNIT_TEST
+
+
 	return 0;
 #endif
 }
@@ -218,7 +222,7 @@ void DrawRect() {
 			if (MyGame.getWorld()[i][j])
 			{
 
-				SDL_Rect rect = { i * 50,j * 50,50,50 };
+				SDL_Rect rect = { i * 2,j * 2, 2, 2 };
 				SDL_RenderFillRect(gRenderer, &rect);
 			}
 		}

@@ -62,9 +62,13 @@ bool LiveOperate::checkLive(Point pos)
 	{
 		alive_sum -= 1;
 	}
-	if (alive_sum <= 3)
+	if (alive_sum == 3)
 	{
 		return true;
+	}
+	else if(alive_sum == 2)
+	{
+		return _world[pos.x][pos.y];
 	}
 	else
 	{
