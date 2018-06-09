@@ -4,7 +4,7 @@
 #include "LiveOperate.h"
 
 #include <gtest/gtest.h>
-#define _UNIT_TEST
+//#define _UNIT_TEST
 
 //µ¥Ôª²âÊÔ£º
 TEST(CollectAroundNumber, shouldBe1WhenSroundingLessthan3Atom)
@@ -29,14 +29,14 @@ TEST(CollectAroundNumber, shouldBe1WhenSroundingLessthan3Atom)
 
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 600;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 800;
 
 const int a_w = 10;
 const int a_h = 10;
 
-const int rows = 60;
-const int cols = 60;
+const int rows = 80;
+const int cols = 80;
 const int colors[][4] = { { 255, 51, 204,225 },{ 255, 153,0,225 },{ 204, 153, 204,255 },{ 102, 255, 204,255 },{ 255, 99, 71,255 },{ 238, 238, 0,255 }
 ,{ 209, 238, 238,255 },{ 139, 99, 108,255 } };
 
@@ -156,6 +156,8 @@ int main(int argc, char* args[])
 		else
 		{
 			bool quit = false;
+			bool flag_sigle_frame = true;
+			bool shouldUpdateLive = true;
 			SDL_Event e;
 			while (!quit)
 			{
@@ -165,12 +167,24 @@ int main(int argc, char* args[])
 					{
 						quit = true;
 					}
+					if (e.key.keysym.sym == SDLK_RETURN&&e.type == SDL_KEYDOWN)
+					{
+							flag_sigle_frame = !flag_sigle_frame;
+							shouldUpdateLive = true;
+					}
 				}
-				SDL_RenderClear(gRenderer);
-				DrawRect();
-				SDL_RenderPresent(gRenderer);
+				
+				
+				if (shouldUpdateLive) {
+					SDL_RenderClear(gRenderer);
+					DrawRect();
+					SDL_RenderPresent(gRenderer);
+					MyGame.updateLive();
+					if (flag_sigle_frame)
+						shouldUpdateLive = false;
+				}
+				cout << shouldUpdateLive << " " << flag_sigle_frame << endl;
 				SDL_Delay(500);
-				MyGame.updateLive();
 
 
 
@@ -187,8 +201,7 @@ int main(int argc, char* args[])
 
 
 void DrawRect() {
-	int color = rand()%8;
-	SDL_SetRenderDrawColor(gRenderer, colors[color][0],colors[color][1],colors[color][2],colors[color][3]);
+
 	cout << MyGame.getCols() << " " << MyGame.getRows() << endl;
 	for (int i = 0; i < MyGame.getRows(); i++)
 	{
@@ -196,7 +209,8 @@ void DrawRect() {
 		{
 			if (MyGame.getWorld(i, j))
 			{
-
+				int color = rand() % 8;
+				SDL_SetRenderDrawColor(gRenderer, colors[color][0], colors[color][1], colors[color][2], colors[color][3]);
 				SDL_Rect rect = { i * a_w,j * a_h, a_w, a_h };
 				SDL_RenderFillRect(gRenderer, &rect);
 			}
