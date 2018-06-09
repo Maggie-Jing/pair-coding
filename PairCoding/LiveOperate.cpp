@@ -89,7 +89,8 @@ void LiveOperate::randomInit(int r, int c) {
 	_cols = c;
 	srand((unsigned)time(NULL));	
 	vector<vector<bool> > new_world;	
-	for (int i = 0; i < _cols; ++i) {
+	for (int i = 0; i < _cols; ++i)
+	{
 		vector<bool> temp_vec;		
 		for (int j = 0; j < _rows; ++j)
 		{ 
@@ -104,4 +105,21 @@ void LiveOperate::randomInit(int r, int c) {
 vector<vector<bool> > LiveOperate::getWorld() {
 
 	return _world;
+}
+
+int LiveOperate::getRows()
+{
+	return _rows;
+}
+void LiveOperate::setRows(int rows)
+{
+	_rows = rows;
+}
+int LiveOperate::getCols() 
+{
+	return _cols;
+}
+void LiveOperate::setCols(int cols)
+{
+	_cols = cols;
 }

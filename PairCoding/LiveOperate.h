@@ -21,11 +21,15 @@ public:
 	void updateLive();
 	bool checkLive(Point pos);
 	vector<vector<bool> > getWorld();
+	int getRows();
+	void setRows(int rows);
+	int getCols();
+	void setCols(int cols);
 
 	void showWorld();
 	void LiveOperate::randomInit(int r, int c);
 
-//private:
+private:
 	vector<vector<bool> > _world;
 	int _rows;
 	int _cols;
