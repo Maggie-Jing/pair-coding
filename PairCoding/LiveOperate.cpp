@@ -9,31 +9,62 @@ LiveOperate::LiveOperate()
 
 LiveOperate::~LiveOperate()
 {
+	if (_world != NULL)
+	{
+		clear();
+	}
 }
 
-void LiveOperate::init(vector<vector<bool> > oldWorld, int r, int c)
+void LiveOperate::init(int r, int c)
 {
-	_world = oldWorld;
 	_rows = r;
 	_cols = c;
+
+	_world = new int*[_rows];
+	for (int i = 0; i < _rows; ++i)
+	{
+		int* temp = new int[_cols];
+		for (int j = 0; j < _cols; ++j)
+		{
+			temp[j] = false;
+		}
+		_world[i] = temp;
+	}
+	
+	randomInit();
+	
 }
 void LiveOperate::updateLive()
 {
-	vector<vector<bool> > new_wold;
+	int** new_wold = new int*[_rows];
 	for (int r = 0; r < _rows; ++r)
 	{
-		vector<bool> temp;
+		int* temp = new int[_cols];
 		for (int c = 0; c < _cols; ++c)
 		{
 			Point pos(r, c);
-			temp.push_back(checkLive(pos));
+			temp[c] = checkLive(pos);
 		}
-		new_wold.push_back(temp);
+		new_wold[r] = temp;
 	}
 	//更新旧世界：
+	clear();
 	_world = new_wold;
 }
 
+void LiveOperate::clear()
+{
+	if (_world != NULL)
+	{
+		for (int i = 0; i < _rows; ++i)
+		{
+			delete[] _world[i];
+			_world[i] = NULL;
+		}
+		delete[] _world;
+		_world = NULL;
+	}
+}
 
 bool LiveOperate::checkLive(Point pos)
 {
@@ -52,7 +83,7 @@ bool LiveOperate::checkLive(Point pos)
 				continue;
 			}
 			
-			if (_world[i][j])
+			if (_world[j][i])
 			{
 				alive_sum++;
 			}
@@ -88,27 +119,22 @@ void LiveOperate::showWorld()
 	}
 }
 
-void LiveOperate::randomInit(int r, int c) {
-	_rows = r;
-	_cols = c;
+void LiveOperate::randomInit() {	
 	srand((unsigned)time(NULL));	
-	vector<vector<bool> > new_world;	
-	for (int i = 0; i < _cols; ++i)
-	{
-		vector<bool> temp_vec;		
-		for (int j = 0; j < _rows; ++j)
+
+	for (int i = 0; i < _rows; ++i)
+	{	
+		for (int j = 0; j < _cols; ++j)
 		{ 
 			int temp = rand() % 2;			
-			temp_vec.push_back(temp);
+			_world[i][j] = temp;
 		}
-			new_world.push_back(temp_vec);
 	}
-	_world = new_world;
 }
 
-vector<vector<bool> > LiveOperate::getWorld() {
+bool LiveOperate::getWorld(int x, int y) {
 
-	return _world;
+	return _world[x][y];
 }
 
 int LiveOperate::getRows()

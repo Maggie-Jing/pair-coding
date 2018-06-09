@@ -17,20 +17,22 @@ public:
 	~LiveOperate();
 
 public:
-	void init(vector<vector<bool> > oldWorld, int r, int c);
+	void init(int r, int c);
 	void updateLive();
 	bool checkLive(Point pos);
-	vector<vector<bool> > getWorld();
+	bool getWorld(int x, int y);
 	int getRows();
 	void setRows(int rows);
 	int getCols();
 	void setCols(int cols);
 
 	void showWorld();
-	void LiveOperate::randomInit(int r, int c);
+	void randomInit();
 
 private:
-	vector<vector<bool> > _world;
+	void clear();
+private:
+	int** _world;
 	int _rows;
 	int _cols;
 };

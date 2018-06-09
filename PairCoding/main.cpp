@@ -29,7 +29,7 @@ TEST(CheckLiveTest, PosAt00)
 	}
 
 	LiveOperate lo;
-	lo.init(world, 5, 5);
+	lo.init(5, 5);
 
 	EXPECT_EQ(true, lo.checkLive(Point(0, 0)));
 }
@@ -56,17 +56,22 @@ TEST(CheckLiveTest, shouldBe1WhenSroundingLess3Atom)
 	}
 
 	LiveOperate lo;
-	lo.init(world, 5, 5);
+	lo.init(5, 5);
 
 	EXPECT_EQ(true, lo.checkLive(Point(1, 1)));
 }
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 800;
+const int SCREEN_WIDTH = 600;
 const int SCREEN_HEIGHT = 600;
 
-const int rows = 100;
-const int cols = 100;
+const int a_w = 10;
+const int a_h = 10;
+
+const int rows = 60;
+const int cols = 60;
+
+
 
 //Starts up SDL and creates window
 bool init();
@@ -126,7 +131,7 @@ bool init()
 			}
 			else
 			{
-				MyGame.randomInit(rows, cols);
+				MyGame.init(rows, cols);
 				SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 225);
 			}
 		}
@@ -195,7 +200,7 @@ int main(int argc, char* args[])
 				SDL_RenderClear(gRenderer);
 				DrawRect();
 				SDL_RenderPresent(gRenderer);
-				SDL_Delay(30);
+				SDL_Delay(500);
 				MyGame.updateLive();
 
 
@@ -215,14 +220,15 @@ int main(int argc, char* args[])
 void DrawRect() {
 
 	SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 225);
-	for (int i = 0; i < MyGame.getCols(); i++)
+	cout << MyGame.getCols() << " " << MyGame.getRows() << endl;
+	for (int i = 0; i < MyGame.getRows(); i++)
 	{
-		for (int j = 0; j < MyGame.getRows(); j++)
+		for (int j = 0; j < MyGame.getCols(); j++)
 		{
-			if (MyGame.getWorld()[i][j])
+			if (MyGame.getWorld(i, j))
 			{
 
-				SDL_Rect rect = { i * 2,j * 2, 2, 2 };
+				SDL_Rect rect = { i * a_w,j * a_h, a_w, a_h };
 				SDL_RenderFillRect(gRenderer, &rect);
 			}
 		}
