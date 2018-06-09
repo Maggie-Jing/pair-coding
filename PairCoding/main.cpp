@@ -4,12 +4,12 @@
 #include "LiveOperate.h"
 
 #include <gtest/gtest.h>
-//#define _UNIT_TEST
+#define _UNIT_TEST
 
 //µ¥Ôª²âÊÔ£º
-TEST(CheckLiveTest, PosAt00)
+TEST(CollectAroundNumber, shouldBe1WhenSroundingLessthan3Atom)
 {
-	bool live[5][5] = {
+	int live[5][5] = {
 		{ 0, 0, 1, 0, 0 },
 		{ 0, 1, 1, 0, 1 },
 		{ 1, 0, 0, 1, 0 },
@@ -17,49 +17,16 @@ TEST(CheckLiveTest, PosAt00)
 		{ 1, 0, 0, 1, 0 }
 	};
 
-	vector<vector<bool> > world;
-	for (int i = 0; i < 5; ++i)
-	{
-		vector<bool> temp;
-		for (int j = 0; j < 5; ++j)
-		{
-			temp.push_back(live[i][j]);
-		}
-		world.push_back(temp);
-	}
-
 	LiveOperate lo;
-	lo.init(5, 5);
+	lo.setWorld(live, 5, 5);
 
-	EXPECT_EQ(true, lo.checkLive(Point(0, 0)));
+	EXPECT_EQ(1, lo.collectAliveNaber(0, 0));
+	EXPECT_EQ(3, lo.collectAliveNaber(1, 1));
+	EXPECT_EQ(2, lo.collectAliveNaber(4, 4));
+	EXPECT_EQ(3, lo.collectAliveNaber(2, 4));
+	EXPECT_EQ(1, lo.collectAliveNaber(0, 4));
 }
 
-TEST(CheckLiveTest, shouldBe1WhenSroundingLess3Atom)
-{
-	bool live[5][5] = {
-		{ 0, 0, 1, 0, 0 },
-		{ 0, 1, 1, 0, 1 },
-		{ 1, 0, 0, 1, 0 },
-		{ 0, 1, 0, 0, 1 },
-		{ 1, 0, 0, 1, 0 }
-	};
-
-	vector<vector<bool> > world;
-	for (int i = 0; i < 5; ++i)
-	{
-		vector<bool> temp;
-		for (int j = 0; j < 5; ++j)
-		{
-			temp.push_back(live[i][j]);
-		}
-		world.push_back(temp);
-	}
-
-	LiveOperate lo;
-	lo.init(5, 5);
-
-	EXPECT_EQ(true, lo.checkLive(Point(1, 1)));
-}
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 600;
@@ -70,6 +37,8 @@ const int a_h = 10;
 
 const int rows = 60;
 const int cols = 60;
+const int colors[][4] = { { 255, 51, 204,225 },{ 255, 153,0,225 },{ 204, 153, 204,255 },{ 102, 255, 204,255 },{ 255, 99, 71,255 },{ 238, 238, 0,255 }
+,{ 209, 238, 238,255 },{ 139, 99, 108,255 } };
 
 
 
@@ -218,8 +187,8 @@ int main(int argc, char* args[])
 
 
 void DrawRect() {
-
-	SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 225);
+	int color = rand()%8;
+	SDL_SetRenderDrawColor(gRenderer, colors[color][0],colors[color][1],colors[color][2],colors[color][3]);
 	cout << MyGame.getCols() << " " << MyGame.getRows() << endl;
 	for (int i = 0; i < MyGame.getRows(); i++)
 	{

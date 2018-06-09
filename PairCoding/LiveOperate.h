@@ -19,17 +19,19 @@ public:
 public:
 	void init(int r, int c);
 	void updateLive();
-	bool checkLive(Point pos);
+	bool checkLive(int x, int y);
 	bool getWorld(int x, int y);
 	int getRows();
 	void setRows(int rows);
 	int getCols();
 	void setCols(int cols);
 
-	void showWorld();
 	void randomInit();
-
+	
+	void setWorld(int oldWorld[][5], int rows, int cols);
+	int collectAliveNaber(int x, int y);
 private:
+	
 	void clear();
 private:
 	int** _world;

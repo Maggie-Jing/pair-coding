@@ -37,15 +37,14 @@ void LiveOperate::init(int r, int c)
 void LiveOperate::updateLive()
 {
 	int** new_wold = new int*[_rows];
-	for (int r = 0; r < _rows; ++r)
+	for (int row = 0; row < _rows; ++row)
 	{
 		int* temp = new int[_cols];
-		for (int c = 0; c < _cols; ++c)
+		for (int col = 0; col < _cols; ++col)
 		{
-			Point pos(r, c);
-			temp[c] = checkLive(pos);
+			temp[col] = checkLive(row, col);
 		}
-		new_wold[r] = temp;
+		new_wold[row] = temp;
 	}
 	//更新旧世界：
 	clear();
@@ -66,40 +65,46 @@ void LiveOperate::clear()
 	}
 }
 
-bool LiveOperate::checkLive(Point pos)
+int LiveOperate::collectAliveNaber(int x, int y)
 {
 	int alive_sum = 0;
-	for (int j = pos.y - 1; j <= pos.y + 1 && j < _rows; ++j)
+	for (int i = x - 1; i <= x + 1 && i < _rows; ++i)
 	{
-		if (j < 0)
+		if (i < 0)
 		{
 			continue;
 		}
-		
-		for (int i = pos.x - 1; i <= pos.x + 1 && i < _cols; ++i)
+		for (int j = y - 1; j <= y + 1 && j < _cols; ++j)
 		{
-			if (i < 0)
+			if (j < 0)
 			{
 				continue;
 			}
-			
-			if (_world[j][i])
+
+			if (_world[i][j])
 			{
 				alive_sum++;
 			}
 		}
 	}
-	if (_world[pos.x][pos.y])
+	if (_world[x][y])
 	{
 		alive_sum -= 1;
 	}
+	return alive_sum;
+}
+
+bool LiveOperate::checkLive(int x, int y)
+{
+	int alive_sum = collectAliveNaber(x, y);
+	
 	if (alive_sum == 3)
 	{
 		return true;
 	}
 	else if(alive_sum == 2)
 	{
-		return _world[pos.x][pos.y];
+		return _world[x][y];
 	}
 	else
 	{
@@ -107,16 +112,20 @@ bool LiveOperate::checkLive(Point pos)
 	}
 }
 
-void LiveOperate::showWorld()
+void LiveOperate::setWorld(int oldWorld[][5], int rows, int cols)
 {
-	for (int i = 0; i < _cols; ++i)
+	_world = new int*[rows];
+	for (int i = 0; i < rows; i++)
 	{
-		for (int j = 0; j < _rows; ++j)
+		int* temp = new int[cols];
+		for (int j = 0; j < cols; ++j)
 		{
-			cout << _world[i][j] << " ";
+			temp[j] = oldWorld[i][j];
 		}
-		cout << endl;
+		_world[i] = temp;
 	}
+	_rows = rows;
+	_cols = cols;
 }
 
 void LiveOperate::randomInit() {	
